@@ -19,20 +19,22 @@ class Shape(object):
 
 
 
-radius = 50
-l1 = [False for x in range(radius*2)]
-l2 = [l1 for x in range(radius*2)]
-cubeCoords = [l2 for x in range(radius*2)]
+radius = 10
 
 
 
+cubeCoords = []
 count = 0
+# creating a globe
 for x in range (radius*2):
+    cubeCoords.append([])
     for y in range(radius*2):
+        cubeCoords[x].append([])
         for z in range(radius*2):
             if math.sqrt((x-radius)**2 + (y-radius)**2 + (z-radius)**2)<radius:
-                cubeCoords[x][y][z] = True
-                count += 1
+                cubeCoords[x][y].append(True)
+            else:
+                cubeCoords[x][y].append(False)
 
 cubeRGB = (0,100,0)
         
@@ -40,8 +42,6 @@ cube = Shape(cubeCoords,cubeRGB)
 
 a = cube.getVolume()
 print("V= ",a)
-print(count)
-
 
 
 
