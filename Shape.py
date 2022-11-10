@@ -13,35 +13,30 @@ class Shape(object):
         for x in range(len(self.coords)):
             for y in range(len(self.coords[0])):
                 for z in range(len(self.coords[0][0])):
-                    if self.coords[x][y][z] == True:
+                    if self.coords[x][y][z]:
                         v += 1
         return v
 
 
 
-radius = 10
 
 
 
-cubeCoords = []
-count = 0
 # creating a globe
-for x in range (radius*2):
-    cubeCoords.append([])
-    for y in range(radius*2):
-        cubeCoords[x].append([])
-        for z in range(radius*2):
-            if math.sqrt((x-radius)**2 + (y-radius)**2 + (z-radius)**2)<radius:
-                cubeCoords[x][y].append(True)
-            else:
-                cubeCoords[x][y].append(False)
 
-cubeRGB = (0,100,0)
-        
-cube = Shape(cubeCoords,cubeRGB)
 
-a = cube.getVolume()
-print("V= ",a)
+def globe(radius):
+    cubeCoords = []
+    for x in range (radius*2):
+        cubeCoords.append([])
+        for y in range(radius*2):
+            cubeCoords[x].append([])
+            for z in range(radius*2):
+                if math.sqrt((x-radius)**2 + (y-radius)**2 + (z-radius)**2)<radius:
+                    cubeCoords[x][y].append(True)
+                else:
+                    cubeCoords[x][y].append(False)
+    return cubeCoords
 
 
 
