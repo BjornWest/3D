@@ -17,7 +17,8 @@ class Shape(object):
         self.rotationMatrix = []
         self.set_orientation(orientation[0], orientation[1], orientation[2], orientation[3])
         self.angleChange = True
-        self.corners = []
+        l = len(coords)/2
+        self.cornersBase = [[-l, -l, -l],[-l, -l, l],[-l, l, -l],[-l, l, l],[l,-l,-l],[l, -l, l],[l, l, -l],[l, l, l]]
 
     def get_volume(self):
         v = 0
@@ -31,10 +32,11 @@ class Shape(object):
     # returns the absolute coordinates of corners
     def get_corners(self):
         if self.angleChange:
-            l = len(self.coords) / 2
+            newCorners = []
             r = self.rotationMatrix
-            self.corners = [[-l*r[1][1], -l, -l], [l, -l, -l], [-l, l, -l], [-l, -l, l],[-l, l, l], [l, -l, l],[l, l, -l], [l, l, l]]
-            return []
+            for x in range(8):
+                newCorners.append(matrix_add(self.position,matrix_mult(r, self.cornersBase[x])))
+            return newCorners
         return [self.corners[0] + self.position[0]]
 
     def set_orientation(self, x, y, z, v):
@@ -43,12 +45,11 @@ class Shape(object):
             x = x / math.sqrt(x ** 2 + y ** 2 + z ** 2)
             y = y / math.sqrt(x ** 2 + y ** 2 + z ** 2)
             z = z / math.sqrt(x ** 2 + y ** 2 + z ** 2)
-        self.rotationMatrix = [[math.cos(v) + x * x * (1 - math.cos(v)), x * y * (1 - math.cos(v)) - z * math.sin(v),
-                                x * z * (1 - math.cos(v)) + y * math.sin(v)],
-                               [y * x * (1 - math.cos(v)) + z * math.sin(v), math.cos(v) + y * y * (1 - math.cos(v)),
-                                y * z * (1 - math.cos(v)) - x * math.sin(v)],
-                               [z * x * (1 - math.cos(v)) - z * math.sin(v),
-                                z * y * (1 - math.cos(v)) + x * math.sin(v), math.cos(v) + z * z * (1 - math.cos(v))]]
+            sinv = math.sin(v)
+            cosv = math.cos(v)
+        self.rotationMatrix = [[cosv + x * x* (1 - cosv), y * x * (1 - cosv) + z * sinv, z * x * (1 - cosv) - z * sinv],
+                               [x * y * (1 - cosv) - z * sinv, cosv + y * y * (1 - cosv), z*y* (1 - cosv) + x * sinv],
+                               [x * z * (1 - cosv) + y * sinv, y * z * (1 - cosv) - x* sinv, cosv + z * z * (1 - sinv)]]
 
 
 # creating a globe
@@ -66,3 +67,51 @@ def globe(radius):
                 else:
                     cubeCoords[x][y].append(False)
     return cubeCoords
+
+
+def get_shell(coords):
+    shellCoords = []
+    for x in range(len(coords)):
+        shellCoords.append([])
+        for y in range(len(coords[x])):
+            shellCoords[x].append([])
+            for z in range(len(coords)[x][y]):
+                if (x or y or z) != (len(coords-1) or 0):
+                    if coords[x-1] and coords[x+1] and coords[y-1] and coords[y+1] and coords[z-1] and coords[z+1]:
+                        shellCoords[x][y].append(False)
+                    else:
+                        shellCoords.append(coords[x][y][z])
+    return shellCoords
+
+
+def matrix_mult(A, B):
+    if len(A) == len(B[0]):
+        m = []
+        for x in range(len(B)):
+            m.append([])
+            for y in range(len(A)):
+                sum = 0
+                for i in range(len(B[0])):
+                    sum += A[i][y]*B[x][i]
+                m[x].append(sum)
+        return m
+    else:
+        print("Matrices not matching")
+
+
+def matrix_add(A,B,scaleA,scaleB):
+    if len(A) == len(B) and len(A[0]) == len(B[0]):
+        C=[]
+        for x in range(len(A)):
+            C.append([])
+            for y in range(len(A[0])):
+                C[x].append(scaleA*A[x][y]+scaleB*B[x][y])
+        return C
+    else:
+        print("matrices not matching")
+
+
+a = [[1, 0], [1, 2]]
+b = [[1,2], [1]]
+
+print(matrix_mult(a,b))
