@@ -10,7 +10,7 @@ from Shape import *
 from Observer import *
 
 root = Tk()
-root.title("Cosmopol")
+root.title("3d")
 root.geometry("1000x1000")
 
 
@@ -29,6 +29,11 @@ standardRGB = [255,255,255]
 space1 = [1000, 1000, 1000]
 
 observer1 = Observer([0, 0, -1000], [0, 0, 1], 0, 45, 45)
+
+
+def rgbtohex(r,g,b):
+    return f'#{r:02x}{g:02x}{b:02x}'
+
 
 #function rendering 3d objects on a 2d screen where objects consist
 #shapes are the objects to be rendered, using the Shape class
@@ -60,7 +65,7 @@ def project_pixel(space,observer,x,y,distance):
     z = zStart
     while sqrt((x-xStart)**2+(y-yStart)**2+(z-zStart)**2) < distance:
         if space[x][y][z][0]:
-            return space[x][y][z][1]
+            return rgbtohex(space[x][y][z][1], space[x][y][z][2], space[x][y][z][3])
 
     return standardRGB
 
@@ -92,3 +97,6 @@ def dedicate_space(shape,observer):
     yMax = centerY+asin(yMin)*centerY
 
     return [xMin, xMax, yMin, yMax]
+
+
+

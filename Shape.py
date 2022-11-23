@@ -114,4 +114,3 @@ def matrix_add(A,B,scaleA,scaleB):
 a = [[1, 0], [1, 2]]
 b = [[1,2], [1]]
 
-print(matrix_mult(a,b))
